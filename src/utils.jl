@@ -1,4 +1,4 @@
-# using StaticArrays
+using StaticArrays
 using LazySets
 
 export Point, Component, Vertex, Transformation, len, l2_squared, find_angle, compute_convex_hull, sortedges, alignhull
@@ -141,14 +141,14 @@ function compute_convex_hull(pts::Vector{Point}, chull::Vector{Point})
         return
     end
 
-
-
     mpts = Vector{Vector{Float64}}(undef, n)
     for i in eachindex(pts)
         mpts[i] = Vector{Float64}([pts[i].x, pts[i].y])
     end
 
     hull = convex_hull(mpts)
+
+    # LazySets
     push!(hull, first(hull))
     reverse!(hull)
     for i in eachindex(hull)

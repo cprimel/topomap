@@ -26,7 +26,6 @@ function test_placepoints()
         end
 
     end
-    print(size(edges))
     println("Placing points...")
 
     res = placepoints(tm, edges, weights)
@@ -87,6 +86,7 @@ function test_compute_convex_hull()
         contains_max_y = (y_val == max_y) || contains_max_y
     end
     @test contains_min_x && contains_max_x && contains_min_y && contains_max_y
+    print(chull)
 end
 
 

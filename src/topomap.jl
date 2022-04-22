@@ -36,7 +36,7 @@ function project(data::Array{Float64,2}, leafSize::Int64, verbose::Bool)
     oldfromnew = Vector{Int64}([])
 
     println("Computing EMST...")
-    e_out, weights, oldfromnew = compute_emst(tm.data)
+    e_out, weights, oldfromnew = compute_emst(tm.data; leafSize)
 
     edges = Vector{Tuple{Int64,Int64}}(undef, size(e_out, 1))
 
