@@ -1,0 +1,17 @@
+name = "TopoMap"
+uuid = "756fef5d-c602-4a90-a6b1-879a434a1820"
+authors = ["Casey Primel <casey.primel@gmail.com>"]
+version = "0.1.0"
+
+[deps]
+CSV = "336ed68f-0bac-5ca0-87d4-7b16caf5d00b"
+Distances = "b4f34e82-e78d-54a5-968a-f98e89d6e8f7"
+Distributions = "31c24e10-a181-5473-b8eb-7969acd0382f"
+EMST = "5c008a4e-79c9-4535-a56b-2c12700c6860"
+LazySets = "b4f0291d-fe17-52bc-9479-3d1a343d9043"
+MLDatasets = "eb30cadb-4394-5ae3-aed4-317e484a6458"
+NearestNeighbors = "b8a86587-4115-5ab1-83bc-aa920d37bbce"
+Plots = "91a5bcdd-55d7-5caf-9e0b-520d859cae80"
+PyPlot = "d330b81b-6aea-500a-939a-2ce795aea3ee"
+StaticArrays = "90137ffa-7385-5640-81b9-e52037218182"
+Test = "8dfed614-e22c-5e08-85e1-65c5234f0b40"
