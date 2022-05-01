@@ -3,32 +3,29 @@ using Test, Distributions, MLDatasets, LazySets
 using EMST
 
 
-function test_placepoints()
+function test_project()
     data = rand(Uniform(0, 10), (4, 100))
-    tm = TopoMapStruct(data, 2, 10, true)
-    println(summary(data))
-    weights = Vector{Float64}([])
-    oldfromnew = Vector{Int64}([])
-    println("Computing EMST...")
+    
+    tm = TopoMap.project(data, 1, true)
+    println(summary(tm))
+    #weights = Vector{Float64}([])
+    #oldfromnew = Vector{Int64}([])
 
-    e_out, weights, oldfromnew = compute_emst(tm.data)
 
-    edges = Vector{Tuple{Int64,Int64}}(undef, size(e_out, 1))
-    print(size(e_out))
-    for i = 1:size(e_out, 1)
-        indexA::Int64 = oldfromnew[e_out[i, :][1]]
-        indexB::Int64 = oldfromnew[e_out[i, :][2]]
+    #edges = Vector{Tuple{Int64,Int64}}(undef, size(e_out, 1))
+    #print(size(e_out))
+    #for i = 1:size(e_out, 1)
+    #    indexA::Int64 = oldfromnew[e_out[i, :][1]]
+    #    indexB::Int64 = oldfromnew[e_out[i, :][2]]
 
-        if indexA < indexB
-            edges[i] = (indexA, indexB)
-        else
-            edges[i] = (indexB, indexA)
-        end
+    #    if indexA < indexB
+    #        edges[i] = (indexA, indexB)
+    #    else
+    #        edges[i] = (indexB, indexA)
+    #    end
 
-    end
-    println("Placing points...")
+    #end
 
-    res = placepoints(tm, edges, weights)
 
 end
 
@@ -103,8 +100,8 @@ end
         mergeset(s, 3, 5)
 
     end
-    @testset "Test placePoints" begin
-        test_placepoints()
+    @testset "Test project" begin
+        test_project()
     end
 
     #@testset "Test alignhull" begin

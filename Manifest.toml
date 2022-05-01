@@ -278,8 +278,8 @@ deps = ["ArgTools", "LibCURL", "NetworkOptions"]
 uuid = "f43a241f-c20a-4ad4-852c-f6b1247861c6"
 
 [[deps.EMST]]
-deps = ["DataStructures", "Distances", "GR", "Plots", "Random", "Statistics", "Test"]
-git-tree-sha1 = "7df69c083489da19f30dc9a66bb553ab2e7f5e11"
+deps = ["DataStructures", "Distances", "GR", "MLDatasets", "Plots", "PyPlot", "Random", "Statistics", "Test"]
+git-tree-sha1 = "021d5c579c5be9c6f255759475a4022744e51913"
 repo-rev = "master"
 repo-url = "https://github.com/cprimel/EMST.jl.git"
 uuid = "5c008a4e-79c9-4535-a56b-2c12700c6860"

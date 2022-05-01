@@ -1,6 +1,41 @@
 using Polyhedra
 
-export placepoints3d
+export project3d
+
+function project3d(data::Array{Float64,2}, leafSize::Int64, verbose::Bool)
+    res = Array{Float64,2}(undef, 3, size(data, 2))
+    tm = TopoMapStruct(data, 3, leafSize, verbose)
+    weights = Vector{Float64}([])
+    oldfromnew = Vector{Int64}([])
+
+    println("Computing EMST...")
+    e_out, weights, oldfromnew = compute_emst(tm.data; leafSize)
+
+    edges = Vector{Tuple{Int64,Int64}}(undef, size(e_out, 1))
+
+    for i = 1:size(e_out, 1)
+        indexA::Int64 = oldfromnew[e_out[i, :][1]]
+        indexB::Int64 = oldfromnew[e_out[i, :][2]]
+
+        if indexA < indexB
+            edges[i] = (indexA, indexB)
+        else
+            edges[i] = (indexB, indexA)
+        end
+    end
+    println("Placing points...")
+
+    pts = placepoints3d(tm, edges, weights)
+
+    for i in eachindex(pts)
+        res[1, i] = pts[i].x
+        res[2, i] = pts[i].y
+        res[3, i] = pts[i].z
+
+    end
+    return res#, tm.steps
+end
+
 
 function placepoints3d(tm::TopoMapStruct, edges::Vector{Tuple{Int64,Int64}}, weights::Vector{Float64})
 

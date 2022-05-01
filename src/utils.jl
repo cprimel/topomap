@@ -13,14 +13,17 @@ Point
 mutable struct Point
     x::Float64
     y::Float64
+    z::Float64
+    Point(x, y) = new(x, y, 0.0)
+    Point(x, y, z) = new(x, y, z)
 end
 
 function len(p::Point)::Float64
-    sqrt(p.x^2 + p.y^2)
+    sqrt(p.x^2 + p.y^2 + p.z^2)
 end
 
 function l2_squared(p1::Point, p2::Point)::Float64
-    return (p1.x - p2.x)^2 + (p1.y - p2.y)^2
+    return (p1.x - p2.x)^2 + (p1.y - p2.y)^2 + (p1.z - p2.z)^2
 end
 
 

@@ -36,24 +36,14 @@ function project(data::Array{Float64,2}, leafSize::Int64, verbose::Bool)
     oldfromnew = Vector{Int64}([])
 
     println("Computing EMST...")
-    e_out, weights, oldfromnew = compute_emst(tm.data; leafSize)
+    edges, weights, oldfromnew = compute_emst(tm.data; leafSize)
 
-    edges = Vector{Tuple{Int64,Int64}}(undef, size(e_out, 1))
-
-    for i = 1:size(e_out, 1)
-        indexA::Int64 = oldfromnew[e_out[i, :][1]]
-        indexB::Int64 = oldfromnew[e_out[i, :][2]]
-
-        if indexA < indexB
-            edges[i] = (indexA, indexB)
-        else
-            edges[i] = (indexB, indexA)
-        end
-    end
     println("Placing points...")
 
     pts = placepoints(tm, edges, weights)
 
+    println(size(pts))
+    println(size(res))
     for i in eachindex(pts)
         res[1, i] = pts[i].x
         res[2, i] = pts[i].y
@@ -62,11 +52,11 @@ function project(data::Array{Float64,2}, leafSize::Int64, verbose::Bool)
 end
 
 
-function placepoints(tm::TopoMapStruct, edges::Vector{Tuple{Int64,Int64}}, weights::Vector{Float64})
+function placepoints(tm::TopoMapStruct, edges::Array{Int64,2}, weights::Vector{Float64})
 
-    tm.comps = IntDisjointSets(length(edges) + 1)
-    tm.compMap = Vector{Component}(undef, length(edges) + 1)
-    tm.verts = Vector{Vertex}(undef, length(edges) + 1)
+    tm.comps = IntDisjointSets(size(edges,1) + 1)
+    tm.compMap = Vector{Component}(undef, size(edges,1) + 1)
+    tm.verts = Vector{Vertex}(undef, size(edges,1) + 1)
     #tm.steps = Vector{Vector{Vertex}}()
 
     for i = 1:length(tm.compMap)
@@ -79,8 +69,8 @@ function placepoints(tm::TopoMapStruct, edges::Vector{Tuple{Int64,Int64}}, weigh
 
     for oi = 1:length(order)
         i = order[oi]
-        p1 = edges[i][1]
-        p2 = edges[i][2]
+        p1 = edges[i,1]
+        p2 = edges[i,2]
 
         c1 = find(tm.comps, p1)
         c2 = find(tm.comps, p2)
