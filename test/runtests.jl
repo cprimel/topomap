@@ -5,9 +5,13 @@ using EMST
 
 function test_project()
     data = rand(Uniform(0, 10), (4, 100))
+
+    tm = TopoMap.project(data)
+    @test summary(tm) == "100×2 Matrix{Float64}"
     
-    tm = TopoMap.project(data, 1, true)
-    println(summary(tm))
+    tm = TopoMap.project(data;dimensions=3,kernel_estimator="normal")
+    @test summary(tm) == "100×3 Matrix{Float64}"
+
     #weights = Vector{Float64}([])
     #oldfromnew = Vector{Int64}([])
 
@@ -53,7 +57,6 @@ function test_compute_convex_hull()
     chull = Vector{Point}([])
 
     compute_convex_hull(points, chull)
-
     # Test to see if result includes points with min and max
     min_x = Inf
     min_y = Inf
@@ -83,9 +86,14 @@ function test_compute_convex_hull()
         contains_max_y = (y_val == max_y) || contains_max_y
     end
     @test contains_min_x && contains_max_x && contains_min_y && contains_max_y
-    print(chull)
 end
 
+
+function test_3d_project()
+    data = rand(Uniform(0, 10), (4, 100))
+    tm = TopoMap.project(data; dimensions=3)
+    println(tm)
+end
 
 @testset "Utility tests" begin
 
@@ -93,13 +101,13 @@ end
     @testset "Test computeConvexHull" begin
         test_compute_convex_hull()
     end
-    @testset "Test IntDisjointSets" begin
-        s = IntDisjointSets(10)
-        x = find(s, 5)
-        @test x == 5
-        mergeset(s, 3, 5)
+    #@testset "Test IntDisjointSets" begin
+    #    s = IntDisjointSets(10)
+    #    x = find(s, 5)
+    #    @test x == 5
+    #    mergeset(s, 3, 5)
+    #end
 
-    end
     @testset "Test project" begin
         test_project()
     end
