@@ -1,41 +1,40 @@
 using KernelDensity
-using EMST
+using mlpack: emst
+#using EMST
 
 export project
 
 import Base.isequal
 
 
+function log(message::String,verbose::Bool)
+    if verbose
+        println("[ Info ] $message")
+    end
+end
+
 function project(data::Matrix{Float64}; dimensions::Int64=2, leafSize::Int64=1, kernel_estimator::String="none", bandwidth::Tuple{Float64,Float64}=(NaN, NaN), verbose::Bool=false)
     if kernel_estimator != "none" && dimensions != 3
-        println("Kernel density estimation is only available for 2-dimensional projection.")
+        println("Incorrect parameters: Kernel density estimation is only available for 2-dimensional projection.")
     end
 
 
     tm = TopoMapStruct(data, dimensions, leafSize, verbose)
+    res = Matrix{Float64}(undef, size(tm.data, 1), dimensions)
 
-    res = Matrix{Float64}(undef, size(tm.data, 2), dimensions)
-    weights = Vector{Float64}([])
-    oldfromnew = Vector{Int64}([])
-
-    println("Computing EMST...")
-    edges, weights, oldfromnew = compute_emst(tm.data; tm.leafSize)
-
-    println("Placing points...")
-    if dimensions == 2
-        pts = placepoints(tm, edges, weights)
-        for i in eachindex(pts)
-            res[i, 1] = pts[i].x
-            res[i, 2] = pts[i].y
-        end
-    elseif dimensions == 3
-        pts = placepoints(tm, edges, weights)
-        for i in eachindex(pts)
-            res[i, 1] = pts[i].x
-            res[i, 2] = pts[i].y
-        end
+    log("Computing EMST...", verbose)
+    edges = emst(data; leaf_size=leafSize, verbose=verbose)
+    weights = edges[:,3]
+    edges = trunc.(Int, edges[:,1:2]) .+1
+    log("Placing points...", verbose)
+    pts = placepoints(tm, edges, weights)
+    for i in eachindex(pts)
+        res[i, 1] = pts[i].x
+        res[i, 2] = pts[i].y
+    end
+    if dimensions == 3
         if kernel_estimator == "normal"
-            println("Estimating density...")
+            log("Estimating density...", verbose)
             if ~isnan(bandwidth[1]) && ~isnan(bandwidth[2])
                 bi_dist = kde(res[:, 1:2]; bandwidth=bandwidth)
             else
@@ -49,7 +48,6 @@ function project(data::Matrix{Float64}; dimensions::Int64=2, leafSize::Int64=1, 
         else
             # Set Z to average weight on vertices edges
             max_weight = maximum(weights)
-            sort!(weights)
             res[1, 3] = (max_weight - weights[1]) / max_weight
             for i = 2:(size(res, 1)-2)
                 res[i, 3] = (max_weight - (weights[i] + weights[i+1] / 2.0)) / max_weight

@@ -4,7 +4,7 @@ using EMST
 
 
 function test_project()
-    data = rand(Uniform(0, 10), (4, 100))
+    data = rand(Uniform(0, 10), (100,4))
 
     tm = TopoMap.project(data)
     @test summary(tm) == "100×2 Matrix{Float64}"
